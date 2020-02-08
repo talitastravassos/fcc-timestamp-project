@@ -1,12 +1,20 @@
 const express = require("express");
 const router = express.Router();
-// const morgan = require("morgan");
 
 router.use(express.json());
-// router.use(morgan("tiny"));
 
 router.get("/timestamp/:date_string?", (req, res) => {
-  console.log(req.params.date_string)
+  const date = new Date(req.params.date_string);
+  // console.log(req.params.date_string)
+  const response = {
+    unix: date.getTime(),
+    utc: date
+  };
+  if (date === undefined) {
+    res.send(new Date());
+  } else {
+    res.send(response);
+  }
 });
 
 module.exports = router;
