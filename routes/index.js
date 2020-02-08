@@ -4,19 +4,21 @@ const router = express.Router();
 router.use(express.json());
 
 router.get("/timestamp/:date_string?", (req, res) => {
-  const date = new Date(req.params.date_string);
-  // console.log(date)
-  const response = {
-    unix: date.getTime(),
-    utc: date
-  };
+  const date_string = req.params.date_string;
+  let date;
 
-  if (req.params.date_string === undefined) {
-    response.unix = new Date().getTime();
-    response.utc = new Date();
-    res.send(response);
+  if (!date_string) {
+    date = new Date();
+  } else if (!isNaN(date_string)) {
+    date = new Date(parseInt(date_string));
   } else {
-    res.send(response);
+    date = new Date(date_string);
+  }
+
+  if (date.toString() === "Invalid Date") {
+    res.send({ error: date.toString() });
+  } else {
+    res.send({ unix: date.getTime(), utc: date.toUTCString() });
   }
 });
 
